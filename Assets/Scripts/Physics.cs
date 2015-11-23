@@ -89,14 +89,25 @@ public class Physics : MonoBehaviour
             else
                 throttle = 1f;            
         }
+        else if(Input.GetKey(KeyCode.DownArrow))
+        {
+            if (throttle > -0.3f)
+                throttle -= 0.01f;
+            else
+                throttle = -0.3f;
+        }
         else
         {
-            if (throttle > 0.0f)
+            if (throttle > 0.01f)
             {
                 throttle -= 0.01f;
             }
+            else if (throttle < -0.01f)
+            {
+                throttle += 0.01f;
+            }
             else
-                throttle = 0;
+                throttle = 0.0f;
 
             //wheel_angular_velocity = 0;
         }
