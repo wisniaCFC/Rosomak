@@ -113,11 +113,15 @@ public class Physics : MonoBehaviour
         }
         gaz.text = "gaz = " + throttle.ToString();
 
+       
+
+        GetComponent<Rigidbody>().angularVelocity = Vector2.zero;
+
         Calc();
         RotateWheels();
 
-        UpdateCamera();
-	}
+        UpdateCamera();              
+    }
 
     void UpdateCamera()
     {
@@ -143,76 +147,15 @@ public class Physics : MonoBehaviour
         Camera.main.transform.LookAt(transform);
     }
 
-    //void Calculations()
-    //{
-    //    tractive_force = CalculateTractiveForce();
-    //    drag_force = CalculateDragForce();
-    //    rolling_resistance = CalculateRollingResistance();
-    //    longitudinal_force = CalculateLongitudinalForce();
-    //    acceleration = CalculateAcceleration();
-    //    velocity = CalculateVelocity();
-    //    car_position = CalculateCarPosition();
-    //    transform.position = car_position;
-    //    Debug.Log(transform.right);
-    //    Debug.Log("tractive: " + tractive_force);
-    //    Debug.Log("force: " + longitudinal_force);
-    //    Debug.Log("acceleration: " + acceleration);
-    //    Debug.Log("velocity: " + velocity);
-    //    Debug.Log("position: " + car_position);
-    //}
-
     float CalculateTractiveForce()
     {
         return (engine_torque * efficiency * GetGearRatio(gear) * differential_ratio) / wheel_radius;
-        //return transform.right * engine_force;
     }
 
     float CalculateTractionTorque()
     {
         return tractive_force * wheel_radius;
     }
-
-    //Vector3 CalculateDragForce()
-    //{
-    //    speed = Mathf.Sqrt(Mathf.Pow(velocity.x, 2) + Mathf.Pow(velocity.y, 2) + Mathf.Pow(velocity.z, 2));
-    //    Vector3 _dragForce = new Vector3();
-    //    _dragForce.x = -drag_coefficient * velocity.x * speed;
-    //    _dragForce.y = -drag_coefficient * velocity.y * speed;
-    //    _dragForce.z = -drag_coefficient * velocity.z * speed;
-    //    return _dragForce;
-    //}
-
-    //Vector3 CalculateRollingResistance()
-    //{
-    //    return -rolling_resistance_coefficient * velocity;
-    //}
-
-    //Vector3 CalculateLongitudinalForce()
-    //{
-    //    return tractive_force + drag_force + rolling_resistance;
-    //}
-
-    //Vector3 CalculateAcceleration()
-    //{
-    //    return longitudinal_force / mass;
-    //}
-
-    //Vector3 CalculateVelocity()
-    //{
-    //    return velocity + Time.fixedDeltaTime * acceleration;
-    //}
-
-    //Vector3 CalculateCarPosition()
-    //{
-    //    return car_position + Time.fixedDeltaTime * velocity;
-    //}
-
-    ///////// NOWE OBLICZENIA
-
-    //float CalculateTractiveForce()
-    //{
-    //    return transform.right * engine_force;
-    //}
 
     float CalculateEngineTorque()
     {
@@ -236,7 +179,13 @@ public class Physics : MonoBehaviour
 
     float CalculateAngularVelocity()
     {
-        return angular_acceleration * Time.fixedDeltaTime;
+        float temp = angular_acceleration * Time.fixedDeltaTime - transform.rotation.z * 500;
+        //if (transform.rotation.z > 0 && throttle == 0.0f)
+        //{
+        //    temp = -transform.rotation.z*500;
+        //}
+        return temp;
+        
         //return speed / r;
     }
 
@@ -256,22 +205,6 @@ public class Physics : MonoBehaviour
         return angular_velocity * 30 / Mathf.PI;
     }
 
-    //float CalculateRotationSpeed()
-    //{
-    //    //return wheel_angular_velocity / (Mathf.PI * 2);
-    //    //return speed / r;
-    //}
-
-    //float CalculateEngineRPMs()
-    //{
-    //    //return rotation_speed * GetGearRatio(gear) * 3.42f * GetGearRatio(gear) * 60 / (Mathf.PI * 2);
-    //}
-
-    //float CalculateWheelsRPMs()
-    //{
-    //    //return speed / r;
-    //}
-
     Vector3 CalculateCarPosition()
     {
         return car_position + Time.fixedDeltaTime * velocity;
@@ -290,25 +223,11 @@ public class Physics : MonoBehaviour
         velocity = CalculateVelocity();
         wheel_rotation = CalculateWheelRotation();
 
-        //max_wheel_torque = GetMaxWheelTorque(gear);
-        //engine_torque = CalculateEngineTorque();
-        //wheel_torque = CalculateWheelTorque();
-        //total_torque = CalculateTotalTorque();
-        //wheel_angular_acceleration = CalculateAngularAcceleration();
-        //wheel_angular_velocity = CalculateAngularVelocity();
-        //speed = CalculateSpeed();
-        //velocity = CalculateVelocity();
-        car_position = CalculateCarPosition();
-        transform.position = car_position;
-        //rotation_speed = CalculateRotationSpeed();
-        //engine_rpm = CalculateEngineRPMs();
-        //if (engine_rpm < 1000)
-        //    engine_rpm = 1000;
-
-        //wheels_rpm = CalculateWheelsRPMs();
-        //if (wheels_rpm > 700)
-        //    wheels_rpm = 700;
-
+        //if (throttle > 0)
+        //{
+            car_position = CalculateCarPosition();
+            transform.position = car_position;
+        //}
 
         Mkmax.text = "Mkmax = " + max_torque.ToString();
         Ms.text = "Ms = " + engine_torque.ToString();
@@ -317,16 +236,6 @@ public class Physics : MonoBehaviour
         E.text = "E = " + angular_acceleration.ToString();
         w.text = "w = " + angular_velocity.ToString();
         v.text = "v = " + speed.ToString();
-
-        //Mkmax.text = "Mkmax = " + max_wheel_torque.ToString();
-        //Ms.text = "Ms = " + engine_torque.ToString();
-        //Mk.text = "Mk = " + wheel_torque.ToString();
-        //M.text = "M = " + total_torque.ToString();
-        //E.text = "E = " + wheel_angular_acceleration.ToString();
-        //w.text = "w = " + wheel_angular_velocity.ToString();
-        //v.text = "v = " + speed.ToString();
-        //vec_v.text = "vec v = " + velocity.ToString();
-        //rpm.text = "engine rpm = " + engine_rpm.ToString();
     }
 
     void RotateWheels()
@@ -343,10 +252,8 @@ public class Physics : MonoBehaviour
         {
             case 1:
                 return 2.97f;
-                break;
             case 2:
                 return 2.07f;
-                break;
             case 3:
                 return 1.43f;
                 break;
