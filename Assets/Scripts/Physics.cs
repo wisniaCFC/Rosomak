@@ -111,9 +111,18 @@ public class Physics : MonoBehaviour
 
             //wheel_angular_velocity = 0;
         }
-        gaz.text = "gaz = " + throttle.ToString();
 
-       
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            transform.Rotate(-Vector3.up);
+        }
+        else if (Input.GetKey(KeyCode.RightArrow))
+        {
+            transform.Rotate(Vector3.up);
+        }
+
+
+        gaz.text = "gaz = " + throttle.ToString();       
 
         GetComponent<Rigidbody>().angularVelocity = Vector2.zero;
 
@@ -179,7 +188,7 @@ public class Physics : MonoBehaviour
 
     float CalculateAngularVelocity()
     {
-        float temp = angular_acceleration * Time.fixedDeltaTime - transform.rotation.z * 500;
+        float temp = angular_acceleration * Time.fixedDeltaTime;// - transform.rotation.z * 500;
         //if (transform.rotation.z > 0 && throttle == 0.0f)
         //{
         //    temp = -transform.rotation.z*500;
@@ -210,6 +219,12 @@ public class Physics : MonoBehaviour
         return car_position + Time.fixedDeltaTime * velocity;
     }
 
+    void MoveCar()
+    {
+        GetComponent<Rigidbody>().velocity = velocity;//new Vector3(velocity.x, -9.81f + GetComponent<Rigidbody>().velocity.y + velocity.y, velocity.z);
+        GetComponent<Rigidbody>().AddRelativeForce(new Vector3(0, -9.81f*1500, 0));
+    }
+
     void Calc()
     {
         max_torque = GetMaxWheelTorque(gear);
@@ -223,10 +238,16 @@ public class Physics : MonoBehaviour
         velocity = CalculateVelocity();
         wheel_rotation = CalculateWheelRotation();
 
-        //if (throttle > 0)
+        MoveCar();
+
+        //if (throttle > 0 || throttle < 0)
         //{
-            car_position = CalculateCarPosition();
-            transform.position = car_position;
+            //car_position = CalculateCarPosition();
+            //transform.position = car_position;
+        //}
+        //else
+        //{
+        //    car_position = transform.position;
         //}
 
         Mkmax.text = "Mkmax = " + max_torque.ToString();
@@ -235,7 +256,14 @@ public class Physics : MonoBehaviour
         M.text = "M = " + total_torque.ToString();
         E.text = "E = " + angular_acceleration.ToString();
         w.text = "w = " + angular_velocity.ToString();
-        v.text = "v = " + speed.ToString();
+        v.text = "v = " + Mathf.Abs(speed).ToString();
+        vec_v.text = "vec v = " + GetComponent<Rigidbody>().velocity;
+
+        if(angular_velocity < 0.01f && angular_velocity > -0.01f)
+        {
+            w.text = "w = 0";
+            v.text = "v = 0";
+        }
     }
 
     void RotateWheels()
