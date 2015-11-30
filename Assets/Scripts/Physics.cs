@@ -16,6 +16,7 @@ public class Physics : MonoBehaviour
 	public Text gaz;
 	public Text rpm;
 	public List<GameObject> wheels;
+	public GameObject emptos;
 
 	float zoomUp = 20;
 	float zoomRight = 40;
@@ -49,11 +50,14 @@ public class Physics : MonoBehaviour
 	private Vector3 car_position;
 	private float engine_rpm;
 
+	Vector3 offset;
+
 	void Start()
 	{
 		car_position = transform.position;
 		gear = 1;
 		Camera.main.transform.position = transform.position - 5 * transform.right + 20 * transform.up;
+		offset = emptos.transform.position - transform.position;
 	}
 
 	void FixedUpdate()
@@ -96,7 +100,7 @@ public class Physics : MonoBehaviour
 		}
 
 
-		gaz.text = "gaz = " + throttle.ToString();
+		//gaz.text = "gaz = " + throttle.ToString();
 
 		GetComponent<Rigidbody>().angularVelocity = Vector2.zero;
 
@@ -173,6 +177,9 @@ public class Physics : MonoBehaviour
 		float mass = GetComponent<Rigidbody>().mass;
 		GetComponent<Rigidbody>().velocity = velocity;
 		GetComponent<Rigidbody>().AddForce(-transform.up * mass * 90 * 9.81f);
+
+		//emptos.transform.position = transform.position - transform.localPosition;// + offset;
+		//emptos.transform.eulerAngles = transform.eulerAngles;
 		//GetComponent<Rigidbody>().AddForce(new Vector3(0, -9.81f * mass * 90, 0));
 		//if (transform.eulerAngles.z > 300)
 		//	GetComponent<Rigidbody>().AddForce(transform.right * (360 - transform.eulerAngles.z));
@@ -195,7 +202,7 @@ public class Physics : MonoBehaviour
 
 		MoveCar();
 
-		Mkmax.text = "Mkmax = " + max_torque.ToString();
+		/*Mkmax.text = "Mkmax = " + max_torque.ToString();
 		Ms.text = "Ms = " + engine_torque.ToString();
 		Mk.text = "Mk = " + drive_torque.ToString();
 		M.text = "M = " + total_torque.ToString();
@@ -208,7 +215,7 @@ public class Physics : MonoBehaviour
 		{
 			w.text = "w = 0";
 			v.text = "v = 0";
-		}
+		}*/
 	}
 
 	void RotateWheels()
